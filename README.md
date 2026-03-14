@@ -2,7 +2,7 @@
 
 > Two personal finance tools built for Indians who want data-backed decisions before spending money.
 
-**Live Demo → [money-clarity.vercel.app](https://money-clarity.vercel.app)**
+**Live Demo → [money-clarity.vercel.app](https://money-clarityy.vercel.app)**
 
 ---
 
