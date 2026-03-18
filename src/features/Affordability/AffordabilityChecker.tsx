@@ -30,7 +30,7 @@ export function AffordabilityChecker() {
   const dailyInc  = n(income) / 365;
   const dailySurp = (n(income) - n(spend)) / 365;
   const savPct    = n(income) > 0 ? (((n(income) - n(spend)) / n(income)) * 100).toFixed(1) : 0;
-  const canP2     = n(income) > 0 && n(spend) > 0 && n(income) > n(spend);
+  const canP2     = n(income) > 0 && n(spend) >= 0 && n(income) > n(spend);
   const canCalc   = item.trim() && n(price) > 0;
 
   function calc() {
@@ -63,11 +63,18 @@ export function AffordabilityChecker() {
           </div>
           <Field label="Yearly Income" value={income} onChange={setIncome} hint="All income sources combined" />
           <Field label="Yearly Total Expenses" value={spend} onChange={setSpend} hint="Rent, food, bills, existing EMIs, everything" />
+          
+          {n(income) === 0 && income !== "" && (
+             <div style={{ background: C.accentLight, border: `1px solid ${C.accent}30`, borderRadius: 8, padding: "10px 14px", fontFamily: "'DM Mono', monospace", fontSize: 11, color: C.accent, marginBottom: 16 }}>
+              💡 Please enter your income to begin.
+            </div>
+          )}
+
           {canP2 && (
             <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
               <Pill label="Daily Income" value={`₹${fmt(dailyInc)}`} color={C.blue} />
               <Pill label="Daily Surplus" value={`₹${fmt(dailySurp)}`} color={C.accent} />
-              <Pill label="Saved" value={`${savPct}%`} color={parseFloat(savPct) >= 30 ? C.accent : parseFloat(savPct) >= 15 ? C.amber : C.red} />
+              <Pill label="Saved" value={`${savPct}%`} color={parseFloat(savPct.toString()) >= 30 ? C.accent : parseFloat(savPct.toString()) >= 15 ? C.amber : C.red} />
             </div>
           )}
           {n(income) > 0 && n(spend) >= n(income) && (
@@ -134,7 +141,7 @@ export function AffordabilityChecker() {
           </div>
           <div style={{ background: C.paper, border: `1px solid ${C.border}`, borderRadius: 12, padding: "16px 18px", marginBottom: 14 }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: 9, color: C.muted, marginBottom: 6 }}>
-              <span>GREAT (0.5x)</span><span>You're on track (1.0x)</span><span>WORST (1.5x+)</span>
+              <span>Great (0.5x)</span><span>You're on track (1.0x)</span><span>Worst (1.5x+)</span>
             </div>
             <div style={{ height: 8, background: C.bg, borderRadius: 99, overflow: "hidden" }}>
               <div style={{ height: "100%", width: `${Math.min((result.ratio/2)*100, 100)}%`, background: `linear-gradient(90deg, ${C.accent}, ${C.amber}, ${C.red})`, borderRadius: 99, transition: "width 1s cubic-bezier(.34,1.56,.64,1)" }} />

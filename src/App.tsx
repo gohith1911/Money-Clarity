@@ -1,10 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { C, FONTS } from "./theme/constants";
 import { AffordabilityChecker } from "./features/Affordability/AffordabilityChecker";
 import { IncomeGoalCalc } from "./features/IncomeGoal/IncomeGoalCalc";
 
 export default function App() {
   const [tab, setTab] = useState("goal");
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      installPrompt.userChoice.then(() => {
+        setInstallPrompt(null);
+      });
+    }
+  };
+
   return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", padding: "36px 16px 80px", fontFamily: "'Outfit', sans-serif" }}>
       <style>{FONTS}</style>
@@ -21,6 +45,14 @@ export default function App() {
         Master your money. Plan your next move.
         </p>
       </div>
+      {installPrompt && (
+        <div style={{ maxWidth: 520, width: "100%", marginBottom: 24 }}>
+            <button onClick={handleInstallClick} style={{ width: '100%', padding: "16px 18px", borderRadius: 14, textAlign: "center", border: `2px solid ${C.accent}`, background: C.accent, cursor: "pointer", transition: "all .2s" }}>
+              <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 15, color: C.paper, marginBottom: 3 }}>Install App</div>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "rgba(255,255,255,0.5)"}}>For a better experience</div>
+            </button>
+        </div>
+      )}
       <div style={{ maxWidth: 520, width: "100%", marginBottom: 24 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {[
