@@ -19,9 +19,9 @@ const VERDICTS = [
 const getVerdict = (r) => VERDICTS.find((v) => r >= v.ratio[0] && r < v.ratio[1]);
 
 const TIERS = [
-  { key: "min",   label: "Minimum",     pct: 40, desc: "Tight but possible. You can manage it.",      color: C.red    },
-  { key: "comfy", label: "Comfortable", pct: 25, desc: "Healthy balance. Room for savings too.",      color: C.amber  },
-  { key: "free",  label: "Freedom",     pct: 15, desc: "You barely feel it. Fully comfortable zone.", color: C.accent },
+  { key: "min",   label: "Essential",     pct: 40, desc: "Tight but possible. You can manage it.",      color: C.red    },
+  { key: "comfy", label: "Balanced", pct: 25, desc: "Healthy balance. Room for savings too.",      color: C.amber  },
+  { key: "free",  label: "Abundant",     pct: 15, desc: "You barely feel it. Fully comfortable zone.", color: C.accent },
 ];
 
 const n = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
@@ -153,7 +153,7 @@ function AffordabilityChecker() {
       {phase === 1 && (
         <div>
           <div style={{ marginBottom: 20 }}>
-            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: C.ink, marginBottom: 4 }}>Your Financial Snapshot</div>
+            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: C.ink, marginBottom: 4 }}>The Foundation</div>
             <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, color: C.muted }}>Enter your yearly numbers. We'll figure out your daily buying power.</div>
           </div>
           <Field label="Yearly Income" value={income} onChange={setIncome} hint="All income sources combined" />
@@ -177,7 +177,7 @@ function AffordabilityChecker() {
       {phase === 2 && (
         <div>
           <div style={{ marginBottom: 20 }}>
-            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: C.ink, marginBottom: 4 }}>What Do You Want to Buy?</div>
+            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: C.ink, marginBottom: 4 }}>The Purchase</div>
             <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, color: C.muted }}>Works for one-time purchases, subscriptions, or recurring spends.</div>
           </div>
           <div style={{ marginBottom: 18 }}>
@@ -229,7 +229,7 @@ function AffordabilityChecker() {
           </div>
           <div style={{ background: C.paper, border: `1px solid ${C.border}`, borderRadius: 12, padding: "16px 18px", marginBottom: 14 }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: 9, color: C.muted, marginBottom: 6 }}>
-              <span>GREAT (0.5x)</span><span>FINE (1.0x)</span><span>WORST (1.5x+)</span>
+              <span>GREAT (0.5x)</span><span>You're on track (1.0x)</span><span>WORST (1.5x+)</span>
             </div>
             <div style={{ height: 8, background: C.bg, borderRadius: 99, overflow: "hidden" }}>
               <div style={{ height: "100%", width: `${Math.min((result.ratio/2)*100, 100)}%`, background: `linear-gradient(90deg, ${C.accent}, ${C.amber}, ${C.red})`, borderRadius: 99, transition: "width 1s cubic-bezier(.34,1.56,.64,1)" }} />
@@ -239,7 +239,7 @@ function AffordabilityChecker() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
             <Pill label="Daily Surplus" value={`₹${fmt(dailySurp)}`} color={C.accent} />
             <Pill label="Total Cost" value={`₹${fmt(result.totalCost)}`} color={C.ink} />
-            <Pill label="Days to Recover" value={`${fmtD(result.daysRec)} days`} color={result.verdict.color} />
+            <Pill label="Days to 'Earn Back' this purchase" value={`${fmtD(result.daysRec)} days`} color={result.verdict.color} />
             <Pill label="Months to Recover" value={`${fmtD(result.monthsRec)} mo`} color={result.verdict.color} />
           </div>
           {payT === "emi" && (
@@ -317,14 +317,14 @@ function IncomeGoalCalc() {
   return (
     <div style={{ animation: "fadeUp .35s ease" }}>
       <div style={{ marginBottom: 22 }}>
-        <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: C.ink, marginBottom: 4 }}>What Must I Earn?</div>
+        <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: C.ink, marginBottom: 4 }}>Lifestyle Target</div>
         <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, color: C.muted, lineHeight: 1.6 }}>
-          Add the things you want. We'll tell you exactly what income target you need at three different comfort levels.
+        Design your lifestyle.
         </div>
       </div>
 
-      <Field label="Monthly Essential Expenses (rent, food, transport, bills)" value={essentials} onChange={setEss}
-        hint="Skip if you're a student or don't know yet. We'll still give you the desire-cost breakdown." />
+      <Field label="Monthly Essentials (rent, food, transport, bills)" value={essentials} onChange={setEss}
+        hint="Optional: Leave as ₹0 if you're a student." />
 
       <div style={{ marginBottom: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -476,14 +476,14 @@ export default function App() {
           Money<br /><em style={{ color: C.accentMid }}>Clarity.</em>
         </h1>
         <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, color: C.muted, lineHeight: 1.7 }}>
-          Two tools. One to check if you can afford something today. One to know what you need to earn to afford it comfortably.
+        Master your money. Plan your next move.
         </p>
       </div>
       <div style={{ maxWidth: 520, width: "100%", marginBottom: 24 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {[
-            { v: "goal",  title: "What Must I Earn?", sub: "Set your income target", icon: "↑" },
-            { v: "check", title: "Can I Afford This?", sub: "Check affordability now", icon: "⚖" },
+            { v: "goal",  title: "Lifestyle Target", sub: "Build your dream life.", icon: "↑" },
+            { v: "check", title: "Affordability Check", sub: "Buy with confidence.", icon: "⚖" },
           ].map(t => (
             <button key={t.v} onClick={() => setTab(t.v)} style={{ padding: "16px 18px", borderRadius: 14, textAlign: "left", border: `2px solid ${tab === t.v ? C.ink : C.border}`, background: tab === t.v ? C.ink : C.paper, cursor: "pointer", transition: "all .2s" }}>
               <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 15, color: tab === t.v ? C.paper : C.ink, marginBottom: 3 }}>{t.icon} {t.title}</div>
